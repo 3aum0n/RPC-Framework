@@ -4,6 +4,8 @@ import api.HelloObject;
 import api.HelloService;
 import client.RpcClientProxy;
 
+import java.util.Random;
+
 /**
  * @author 3aum0n
  * @create 2022-01-08 18:19
@@ -15,7 +17,7 @@ public class TestClient {
     public static void main(String[] args) {
         RpcClientProxy proxy = new RpcClientProxy("127.0.0.1", 9000);
         HelloService helloService = proxy.getProxy(HelloService.class);
-        HelloObject message = new HelloObject(01, "This is a message");
+        HelloObject message = new HelloObject(new Random().nextInt(10), "This is a message");
         String res = helloService.hello(message);
         System.out.println(res);
     }
