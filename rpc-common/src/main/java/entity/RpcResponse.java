@@ -26,6 +26,9 @@ public class RpcResponse<T> implements Serializable {
      */
     private T data;
 
+    public RpcResponse() {
+    }
+
     /*
      * 用于快速生成成功的响应对象
      * 第一个T表示<T>是一个泛型

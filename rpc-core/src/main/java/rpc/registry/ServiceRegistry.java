@@ -1,4 +1,4 @@
-package registry;
+package rpc.registry;
 
 /**
  * @author 3aum0n

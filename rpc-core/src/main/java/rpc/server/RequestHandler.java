@@ -1,15 +1,16 @@
-package server;
+package rpc.server;
 
 import entity.RpcRequest;
 import entity.RpcResponse;
 import enumeration.ResponseCode;
-import exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ * 进行过程调用的处理器
+ *
  * @author 3aum0n
  */
 @Slf4j

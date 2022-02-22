@@ -1,20 +1,19 @@
 package test;
 
 import api.HelloService;
-import registry.DefaultServiceRegistry;
-import registry.ServiceRegistry;
-import server.RpcServer;
+import rpc.registry.DefaultServiceRegistry;
+import rpc.registry.ServiceRegistry;
+import rpc.socket.server.SocketServer;
 
 /**
  * @author 3aum0n
- * @create 2022-01-08 18:15
  */
-public class TestServer {
+public class TestSocketServer {
     public static void main(String[] args) {
         HelloService helloService = new HelloServiceImpl();
         ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
         serviceRegistry.register(helloService);
-        RpcServer rpcServer = new RpcServer(serviceRegistry);
+        SocketServer rpcServer = new SocketServer(serviceRegistry);
         rpcServer.start(9000);
     }
 }
