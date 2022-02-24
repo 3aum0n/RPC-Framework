@@ -3,7 +3,7 @@ package rpc.socket.server;
 import entity.RpcRequest;
 import lombok.extern.slf4j.Slf4j;
 import rpc.registry.ServiceRegistry;
-import rpc.server.RequestHandler;
+import rpc.RequestHandler;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

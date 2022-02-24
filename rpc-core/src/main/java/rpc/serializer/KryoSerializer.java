@@ -49,7 +49,7 @@ public class KryoSerializer implements CommonSerializer {
             kryoThreadLocal.remove();
             return object;
         } catch (Exception e) {
-            Log.error("反序列化时有错误发生");
+            Log.error("反序列化时有错误发生", e);
             throw new SerializeException("反序列化时有错误发生");
         }
     }

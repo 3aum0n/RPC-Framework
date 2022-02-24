@@ -11,10 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import rpc.RpcServer;
 import rpc.codec.CommonDecoder;
 import rpc.codec.CommonEncoder;
+import rpc.serializer.HessianSerializer;
 import rpc.serializer.JsonSerializer;
 import rpc.serializer.KryoSerializer;
 
 /**
+ * NIO方式服务提供侧
+ *
  * @author 3aum0n
  */
 @Slf4j
@@ -37,7 +40,7 @@ public class NettyServer implements RpcServer {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             // 编码器
-                            pipeline.addLast(new CommonEncoder(new KryoSerializer()));
+                            pipeline.addLast(new CommonEncoder(new HessianSerializer()));
                             // 解码器
                             pipeline.addLast(new CommonDecoder());
                             // 数据处理器

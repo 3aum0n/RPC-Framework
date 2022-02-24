@@ -2,7 +2,7 @@ package test;
 
 import api.HelloObject;
 import api.HelloService;
-import rpc.client.RpcClientProxy;
+import rpc.RpcClientProxy;
 import rpc.socket.client.SocketClient;
 
 import java.util.Random;
