@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import rpc.RpcClient;
 import rpc.codec.CommonDecoder;
 import rpc.codec.CommonEncoder;
+import rpc.serializer.HessianSerializer;
 import rpc.serializer.JsonSerializer;
 import rpc.serializer.KryoSerializer;
 
@@ -41,7 +42,7 @@ public class NettyClient implements RpcClient {
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         ChannelPipeline pipeline = socketChannel.pipeline();
                         pipeline.addLast(new CommonDecoder())
-                                .addLast(new CommonEncoder(new KryoSerializer()))
+                                .addLast(new CommonEncoder(new HessianSerializer()))
                                 .addLast(new NettyClientHandler());
                     }
                 });

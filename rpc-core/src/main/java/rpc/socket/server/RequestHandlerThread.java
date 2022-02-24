@@ -1,9 +1,10 @@
 package rpc.socket.server;
 
 import entity.RpcRequest;
+import entity.RpcResponse;
 import lombok.extern.slf4j.Slf4j;
 import rpc.registry.ServiceRegistry;
-import rpc.server.RequestHandler;
+import rpc.RequestHandler;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,7 +34,7 @@ public class RequestHandlerThread implements Runnable {
             String interfaceName = rpcRequest.getInterfaceName();
             Object service = serviceRegistry.getService(interfaceName);
             Object result = requestHandler.handle(rpcRequest, service);
-            objectOutputStream.writeObject(result);
+            objectOutputStream.writeObject(RpcResponse.success(result));
             objectOutputStream.flush();
         } catch (IOException | ClassNotFoundException e) {
             log.error("调用或发送时有错误发生", e);

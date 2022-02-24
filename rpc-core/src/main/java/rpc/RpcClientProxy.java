@@ -1,16 +1,16 @@
-package rpc.client;
+package rpc;
 
 import entity.RpcRequest;
 import lombok.extern.slf4j.Slf4j;
-import rpc.RpcClient;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
+ * RPC客户端动态代理
+ *
  * @author 3aum0n
- * @create 2022-01-07 23:14
  */
 @Slf4j
 public class RpcClientProxy implements InvocationHandler {
@@ -21,7 +21,7 @@ public class RpcClientProxy implements InvocationHandler {
         this.client = client;
     }
 
-    /*
+    /**
      * 生成代理对象
      */
     @SuppressWarnings("unchecked")
@@ -29,7 +29,7 @@ public class RpcClientProxy implements InvocationHandler {
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[]{clazz}, this);
     }
 
-    /*
+    /**
      * 指明代理对象的方法被调用时的动作
      */
     @Override

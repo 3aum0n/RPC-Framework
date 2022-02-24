@@ -8,6 +8,7 @@ import entity.RpcRequest;
 import entity.RpcResponse;
 import enumeration.SerializerCode;
 import exception.SerializeException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 /**
  * @author 3aum0n
  */
+@Slf4j
 public class KryoSerializer implements CommonSerializer {
 
     private static final ThreadLocal<Kryo> kryoThreadLocal = ThreadLocal.withInitial(() -> {
@@ -35,7 +37,7 @@ public class KryoSerializer implements CommonSerializer {
             kryoThreadLocal.remove();
             return output.toBytes();
         } catch (Exception e) {
-            Log.error("序列化时有错误发生", e);
+            log.error("序列化时有错误发生", e);
             throw new SerializeException("序列化时有错误发生");
         }
     }
@@ -49,7 +51,7 @@ public class KryoSerializer implements CommonSerializer {
             kryoThreadLocal.remove();
             return object;
         } catch (Exception e) {
-            Log.error("反序列化时有错误发生");
+            log.error("反序列化时有错误发生", e);
             throw new SerializeException("反序列化时有错误发生");
         }
     }

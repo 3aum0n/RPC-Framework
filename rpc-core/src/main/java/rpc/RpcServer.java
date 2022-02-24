@@ -7,5 +7,8 @@ package rpc;
  */
 public interface RpcServer {
 
+    /**
+     * @param port
+     */
     void start(int port);
 }
