@@ -18,6 +18,7 @@ import rpc.serializer.CommonSerializer;
 import rpc.serializer.HessianSerializer;
 import rpc.serializer.JsonSerializer;
 import rpc.serializer.KryoSerializer;
+import util.RpcMessageChecker;
 
 /**
  * NIO 方式消费侧客户端类
@@ -77,8 +78,9 @@ public class NettyClient implements RpcClient {
                 });
                 channel.closeFuture().sync();
                 // 通过 AttributeKey 的方式阻塞获得返回结果
-                AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse");
+                AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse" + rpcRequest.getRequestId());
                 RpcResponse rpcResponse = channel.attr(key).get();
+                RpcMessageChecker.check(rpcRequest, rpcResponse);
                 return rpcResponse.getData();
             }
         } catch (InterruptedException e) {
