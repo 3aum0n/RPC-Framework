@@ -58,7 +58,7 @@ public class NettyClient implements RpcClient {
             protected void initChannel(SocketChannel socketChannel) throws Exception {
                 ChannelPipeline pipeline = socketChannel.pipeline();
                 pipeline.addLast(new CommonDecoder())
-                        .addLast(new CommonEncoder(new HessianSerializer()))
+                        .addLast(new CommonEncoder(serializer))
                         .addLast(new NettyClientHandler());
             }
         });
