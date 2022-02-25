@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 默认的服务注册表
+ *
  * @author 3aum0n
  */
 @Slf4j

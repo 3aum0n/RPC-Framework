@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 
 /**
+ * JSON 序列化器
+ *
  * @author 3aum0n
  */
 @Slf4j

@@ -12,6 +12,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
+ * 处理 RpcRequest 的工作线程
+ *
  * @author 3aum0n
  */
 @Slf4j

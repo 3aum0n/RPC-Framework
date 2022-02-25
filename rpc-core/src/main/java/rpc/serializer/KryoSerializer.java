@@ -3,7 +3,6 @@ package rpc.serializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.minlog.Log;
 import entity.RpcRequest;
 import entity.RpcResponse;
 import enumeration.SerializerCode;
@@ -14,6 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 /**
+ * Kryo 序列化器
+ *
  * @author 3aum0n
  */
 @Slf4j

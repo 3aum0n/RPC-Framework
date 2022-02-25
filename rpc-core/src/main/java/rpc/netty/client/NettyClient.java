@@ -17,6 +17,8 @@ import rpc.serializer.JsonSerializer;
 import rpc.serializer.KryoSerializer;
 
 /**
+ * NIO 方式消费侧客户端类
+ *
  * @author 3aum0n
  */
 @Slf4j

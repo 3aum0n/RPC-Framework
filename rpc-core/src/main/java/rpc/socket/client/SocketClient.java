@@ -14,6 +14,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 /**
+ * Socket 方式远程方法调用的消费者（客户端）
+ *
  * @author 3aum0n
  */
 @Slf4j

@@ -8,6 +8,7 @@ import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * Netty 客户端侧处理器
  * 处理收到的消息，即 RpcResponse 对象，将返回的结果放入 ctx 中
  *
  * @author 3aum0n

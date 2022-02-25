@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * RPC 调用过程中的错误
+ *
  * @author 3aum0n
  */
 @AllArgsConstructor

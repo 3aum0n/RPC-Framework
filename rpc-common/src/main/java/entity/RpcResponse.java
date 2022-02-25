@@ -6,6 +6,8 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
+ * 提供者执行完成或出现错误后向消费者返回的结果对象
+ *
  * @author 3aum0n
  */
 @Data

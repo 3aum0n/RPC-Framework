@@ -1,6 +1,8 @@
 package exception;
 
 /**
+ * 序列化异常
+ *
  * @author 3aum0n
  */
 public class SerializeException extends RuntimeException {
