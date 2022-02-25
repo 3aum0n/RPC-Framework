@@ -3,6 +3,7 @@ package test;
 import api.HelloObject;
 import api.HelloService;
 import rpc.RpcClientProxy;
+import rpc.serializer.KryoSerializer;
 import rpc.socket.client.SocketClient;
 
 import java.util.Random;
@@ -16,6 +17,7 @@ public class TestSocketClient {
      */
     public static void main(String[] args) {
         SocketClient client = new SocketClient("127.0.0.1", 9000);
+        client.setSerializer(new KryoSerializer());
         RpcClientProxy proxy = new RpcClientProxy(client);
         HelloService helloService = proxy.getProxy(HelloService.class);
         HelloObject message = new HelloObject(new Random().nextInt(10), "This is a message");

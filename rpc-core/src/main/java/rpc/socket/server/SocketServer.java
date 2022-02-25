@@ -1,9 +1,12 @@
 package rpc.socket.server;
 
+import enumeration.RpcError;
+import exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
 import rpc.registry.ServiceRegistry;
 import rpc.RpcServer;
 import rpc.RequestHandler;
+import rpc.serializer.CommonSerializer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -23,9 +26,10 @@ public class SocketServer implements RpcServer {
     private static final int KEEP_ALIVE_TIME = 60;
     private static final int BLOCKING_QUEUE_CAPACITY = 100;
     private final ExecutorService threadPool;
-    
+
     private RequestHandler requestHandler = new RequestHandler();
     private final ServiceRegistry serviceRegistry;
+    private CommonSerializer serializer;
 
     /**
      * 使用线程池创建线程
@@ -39,16 +43,25 @@ public class SocketServer implements RpcServer {
 
     @Override
     public void start(int port) {
+        if (serializer == null) {
+            log.error("未设置序列化器");
+            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
+        }
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             log.info("服务器正在启动");
             Socket socket;
             while ((socket = serverSocket.accept()) != null) {
                 log.info("消费者连接: {}:{}", socket.getInetAddress(), socket.getPort());
-                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serviceRegistry));
+                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serviceRegistry, serializer));
             }
             threadPool.shutdown();
         } catch (IOException e) {
             log.error("服务器启动过程中发生错误", e);
         }
+    }
+
+    @Override
+    public void setSerializer(CommonSerializer serializer) {
+        this.serializer = serializer;
     }
 }

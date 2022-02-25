@@ -3,6 +3,7 @@ package test;
 import api.HelloService;
 import rpc.registry.DefaultServiceRegistry;
 import rpc.registry.ServiceRegistry;
+import rpc.serializer.HessianSerializer;
 import rpc.socket.server.SocketServer;
 
 /**
@@ -14,6 +15,7 @@ public class TestSocketServer {
         ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
         serviceRegistry.register(helloService);
         SocketServer rpcServer = new SocketServer(serviceRegistry);
+        rpcServer.setSerializer(new HessianSerializer());
         rpcServer.start(9000);
     }
 }
