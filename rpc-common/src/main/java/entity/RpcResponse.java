@@ -2,6 +2,7 @@ package entity;
 
 import enumeration.ResponseCode;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @author 3aum0n
  */
 @Data
+@NoArgsConstructor
 public class RpcResponse<T> implements Serializable {
 
     /**
@@ -33,8 +35,6 @@ public class RpcResponse<T> implements Serializable {
      */
     private T data;
 
-    public RpcResponse() {
-    }
 
     /**
      * 用于快速生成成功的响应对象
