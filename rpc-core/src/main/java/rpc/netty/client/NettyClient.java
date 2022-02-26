@@ -20,6 +20,9 @@ import rpc.serializer.JsonSerializer;
 import rpc.serializer.KryoSerializer;
 import util.RpcMessageChecker;
 
+import java.net.InetSocketAddress;
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * NIO 方式消费侧客户端类
  *
@@ -54,26 +57,16 @@ public class NettyClient implements RpcClient {
             log.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            protected void initChannel(SocketChannel socketChannel) throws Exception {
-                ChannelPipeline pipeline = socketChannel.pipeline();
-                pipeline.addLast(new CommonDecoder())
-                        .addLast(new CommonEncoder(serializer))
-                        .addLast(new NettyClientHandler());
-            }
-        });
+        AtomicReference<Object> result = new AtomicReference<>(null);
         try {
-            ChannelFuture future = bootstrap.connect(host, port).sync();
-            log.info("客户端连接到服务器 {}:{}", host, port);
-            Channel channel = future.channel();
-            if (channel != null) {
+            Channel channel = ChannelProvider.get(new InetSocketAddress(host, port), serializer);
+            if (channel.isActive()) {
                 // 发送非阻塞，会立刻返回
-                channel.writeAndFlush(rpcRequest).addListener(future1 -> {
-                    if (future1.isSuccess()) {
+                channel.writeAndFlush(rpcRequest).addListener(future -> {
+                    if (future.isSuccess()) {
                         log.info(String.format("客户端发送消息: %s", rpcRequest.toString()));
                     } else {
-                        log.error("发送消息时有错误发生: ", future1.cause());
+                        log.error("发送消息时有错误发生: ", future.cause());
                     }
                 });
                 channel.closeFuture().sync();
@@ -81,12 +74,14 @@ public class NettyClient implements RpcClient {
                 AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse" + rpcRequest.getRequestId());
                 RpcResponse rpcResponse = channel.attr(key).get();
                 RpcMessageChecker.check(rpcRequest, rpcResponse);
-                return rpcResponse.getData();
+                result.set(rpcResponse.getData());
+            } else {
+                System.exit(0);
             }
         } catch (InterruptedException e) {
             log.info("发送消息时有错误发生", e);
         }
-        return null;
+        return result.get();
     }
 
     @Override
