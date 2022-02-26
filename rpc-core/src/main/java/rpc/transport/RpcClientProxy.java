@@ -1,7 +1,8 @@
-package rpc;
+package rpc.transport;
 
 import entity.RpcRequest;
 import lombok.extern.slf4j.Slf4j;
+import rpc.transport.RpcClient;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

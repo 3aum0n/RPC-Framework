@@ -1,4 +1,4 @@
-package rpc.netty.client;
+package rpc.transport.netty.client;
 
 import entity.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;

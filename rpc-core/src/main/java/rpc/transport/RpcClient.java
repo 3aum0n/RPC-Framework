@@ -1,4 +1,4 @@
-package rpc;
+package rpc.transport;
 
 import entity.RpcRequest;
 import rpc.serializer.CommonSerializer;

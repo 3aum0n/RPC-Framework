@@ -1,4 +1,4 @@
-package rpc.socket.util;
+package rpc.transport.socket.util;
 
 import entity.RpcRequest;
 import entity.RpcResponse;
@@ -10,8 +10,6 @@ import rpc.serializer.CommonSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.util.Scanner;
 
 /**
  * Socket 方式从输入流中读取字节并反序列化

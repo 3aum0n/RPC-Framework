@@ -1,10 +1,8 @@
 package test;
 
 import api.HelloService;
-import rpc.registry.DefaultServiceRegistry;
-import rpc.registry.ServiceRegistry;
 import rpc.serializer.HessianSerializer;
-import rpc.socket.server.SocketServer;
+import rpc.transport.socket.server.SocketServer;
 
 /**
  * @author 3aum0n
@@ -12,10 +10,8 @@ import rpc.socket.server.SocketServer;
 public class TestSocketServer {
     public static void main(String[] args) {
         HelloService helloService = new HelloServiceImpl();
-        ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
-        serviceRegistry.register(helloService);
-        SocketServer rpcServer = new SocketServer(serviceRegistry);
+        SocketServer rpcServer = new SocketServer("127.0.0.1", 9000);
         rpcServer.setSerializer(new HessianSerializer());
-        rpcServer.start(9000);
+        rpcServer.publishService(helloService, HelloService.class);
     }
 }

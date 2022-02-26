@@ -1,4 +1,4 @@
-package rpc.netty.client;
+package rpc.transport.netty.client;
 
 import enumeration.RpcError;
 import exception.RpcException;

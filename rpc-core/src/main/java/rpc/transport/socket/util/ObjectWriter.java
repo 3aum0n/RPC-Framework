@@ -1,4 +1,4 @@
-package rpc.socket.util;
+package rpc.transport.socket.util;
 
 import entity.RpcRequest;
 import enumeration.PackageType;

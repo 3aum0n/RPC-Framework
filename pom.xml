@@ -7,7 +7,7 @@
     <groupId>com.kksalm</groupId>
     <artifactId>RPC-Framework</artifactId>
     <packaging>pom</packaging>
-    <version>2.0-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
 
     <modules>
         <module>rpc-common</module>
@@ -24,7 +24,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <netty-version>4.1.50.Final</netty-version>
-        <project.version>2.0-SNAPSHOT</project.version>
+        <project.version>3.0-SNAPSHOT</project.version>
         <guava.version>29.0-jre</guava.version>
     </properties>
 

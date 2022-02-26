@@ -1,12 +1,8 @@
 package test;
 
 import api.HelloService;
-import rpc.netty.server.NettyServer;
-import rpc.registry.DefaultServiceRegistry;
-import rpc.registry.ServiceRegistry;
-import rpc.serializer.KryoSerializer;
+import rpc.transport.netty.server.NettyServer;
 import rpc.serializer.ProtobufSerializer;
-import rpc.socket.server.SocketServer;
 
 /**
  * @author 3aum0n
@@ -14,10 +10,8 @@ import rpc.socket.server.SocketServer;
 public class TestNettyServer {
     public static void main(String[] args) {
         HelloService helloService = new HelloServiceImpl();
-        ServiceRegistry serviceRegistry = new DefaultServiceRegistry();
-        serviceRegistry.register(helloService);
-        NettyServer rpcServer = new NettyServer();
+        NettyServer rpcServer = new NettyServer("127.0.0.1", 9000);
         rpcServer.setSerializer(new ProtobufSerializer());
-        rpcServer.start(9000);
+        rpcServer.publishService(helloService, HelloService.class);
     }
 }

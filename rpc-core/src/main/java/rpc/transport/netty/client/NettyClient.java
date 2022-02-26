@@ -1,4 +1,4 @@
-package rpc.netty.client;
+package rpc.transport.netty.client;
 
 import entity.RpcRequest;
 import entity.RpcResponse;
@@ -7,17 +7,13 @@ import exception.RpcException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
-import rpc.RpcClient;
-import rpc.codec.CommonDecoder;
-import rpc.codec.CommonEncoder;
+import rpc.transport.RpcClient;
+import rpc.registry.NacosServiceRegistry;
+import rpc.registry.ServiceRegistry;
 import rpc.serializer.CommonSerializer;
-import rpc.serializer.HessianSerializer;
-import rpc.serializer.JsonSerializer;
-import rpc.serializer.KryoSerializer;
 import util.RpcMessageChecker;
 
 import java.net.InetSocketAddress;
@@ -32,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class NettyClient implements RpcClient {
 
     private static final Bootstrap bootstrap;
+    private final ServiceRegistry serviceRegistry;
 
     private CommonSerializer serializer;
 
@@ -43,12 +40,9 @@ public class NettyClient implements RpcClient {
                 .option(ChannelOption.SO_KEEPALIVE, true);
     }
 
-    private String host;
-    private int port;
+    public NettyClient() {
+        this.serviceRegistry = new NacosServiceRegistry();
 
-    public NettyClient(String host, int port) {
-        this.host = host;
-        this.port = port;
     }
 
     @Override
@@ -59,7 +53,8 @@ public class NettyClient implements RpcClient {
         }
         AtomicReference<Object> result = new AtomicReference<>(null);
         try {
-            Channel channel = ChannelProvider.get(new InetSocketAddress(host, port), serializer);
+            InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+            Channel channel = ChannelProvider.get(inetSocketAddress, serializer);
             if (channel.isActive()) {
                 // 发送非阻塞，会立刻返回
                 channel.writeAndFlush(rpcRequest).addListener(future -> {

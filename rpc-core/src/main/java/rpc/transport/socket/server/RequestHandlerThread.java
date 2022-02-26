@@ -1,13 +1,13 @@
-package rpc.socket.server;
+package rpc.transport.socket.server;
 
 import entity.RpcRequest;
 import entity.RpcResponse;
 import lombok.extern.slf4j.Slf4j;
 import rpc.registry.ServiceRegistry;
-import rpc.RequestHandler;
+import rpc.handler.RequestHandler;
 import rpc.serializer.CommonSerializer;
-import rpc.socket.util.ObjectReader;
-import rpc.socket.util.ObjectWriter;
+import rpc.transport.socket.util.ObjectReader;
+import rpc.transport.socket.util.ObjectWriter;
 
 import java.io.*;
 import java.net.Socket;
@@ -37,8 +37,7 @@ public class RequestHandlerThread implements Runnable {
              OutputStream outputStream = socket.getOutputStream()) {
             RpcRequest rpcRequest = (RpcRequest) ObjectReader.readObject(inputStream);
             String interfaceName = rpcRequest.getInterfaceName();
-            Object service = serviceRegistry.getService(interfaceName);
-            Object result = requestHandler.handle(rpcRequest, service);
+            Object result = requestHandler.handle(rpcRequest);
             RpcResponse<Object> response = RpcResponse.success(result, rpcRequest.getRequestId());
             ObjectWriter.writeObject(outputStream, response, serializer);
         } catch (IOException e) {

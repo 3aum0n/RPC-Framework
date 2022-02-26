@@ -1,4 +1,4 @@
-package rpc.socket.client;
+package rpc.transport.socket.client;
 
 import entity.RpcRequest;
 import entity.RpcResponse;
@@ -6,13 +6,16 @@ import enumeration.ResponseCode;
 import enumeration.RpcError;
 import exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
-import rpc.RpcClient;
+import rpc.registry.NacosServiceRegistry;
+import rpc.registry.ServiceRegistry;
+import rpc.transport.RpcClient;
 import rpc.serializer.CommonSerializer;
-import rpc.socket.util.ObjectReader;
-import rpc.socket.util.ObjectWriter;
+import rpc.transport.socket.util.ObjectReader;
+import rpc.transport.socket.util.ObjectWriter;
 import util.RpcMessageChecker;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -23,14 +26,12 @@ import java.net.Socket;
 @Slf4j
 public class SocketClient implements RpcClient {
 
-    private final String host;
-    private final int port;
+    private final ServiceRegistry serviceRegistry;
 
     private CommonSerializer serializer;
 
-    public SocketClient(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public SocketClient() {
+        serviceRegistry = new NacosServiceRegistry();
     }
 
     @Override
@@ -39,7 +40,9 @@ public class SocketClient implements RpcClient {
             log.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        try (Socket socket = new Socket(host, port)) {
+        InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+        try (Socket socket = new Socket()) {
+            socket.connect(inetSocketAddress);
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();
             ObjectWriter.writeObject(outputStream, rpcRequest, serializer);
