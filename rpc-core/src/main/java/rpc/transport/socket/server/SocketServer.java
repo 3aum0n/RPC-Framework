@@ -56,7 +56,7 @@ public class SocketServer implements RpcServer {
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            log.info("服务器正在启动");
+            log.info("服务器启动...");
             Socket socket;
             while ((socket = serverSocket.accept()) != null) {
                 log.info("消费者连接: {}:{}", socket.getInetAddress(), socket.getPort());
@@ -69,12 +69,12 @@ public class SocketServer implements RpcServer {
     }
 
     @Override
-    public <T> void publishService(Object service, Class<T> serviceClass) {
+    public <T> void publishService(T service, Class<T> serviceClass) {
         if (serializer == null) {
             log.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        serviceProvider.addServiceProvider(service);
+        serviceProvider.addServiceProvider(service, serviceClass);
         serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
         start();
     }

@@ -6,7 +6,9 @@ import enumeration.ResponseCode;
 import enumeration.RpcError;
 import exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
+import rpc.registry.NacosServiceDiscovery;
 import rpc.registry.NacosServiceRegistry;
+import rpc.registry.ServiceDiscovery;
 import rpc.registry.ServiceRegistry;
 import rpc.transport.RpcClient;
 import rpc.serializer.CommonSerializer;
@@ -26,12 +28,12 @@ import java.net.Socket;
 @Slf4j
 public class SocketClient implements RpcClient {
 
-    private final ServiceRegistry serviceRegistry;
+    private final ServiceDiscovery serviceDiscovery;
 
     private CommonSerializer serializer;
 
     public SocketClient() {
-        serviceRegistry = new NacosServiceRegistry();
+        serviceDiscovery = new NacosServiceDiscovery();
     }
 
     @Override
@@ -40,7 +42,7 @@ public class SocketClient implements RpcClient {
             log.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+        InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
         try (Socket socket = new Socket()) {
             socket.connect(inetSocketAddress);
             OutputStream outputStream = socket.getOutputStream();

@@ -9,7 +9,7 @@ import rpc.transport.socket.server.SocketServer;
  */
 public class TestSocketServer {
     public static void main(String[] args) {
-        HelloService helloService = new HelloServiceImpl();
+        HelloService helloService = new HelloServiceImpl2();
         SocketServer rpcServer = new SocketServer("127.0.0.1", 9000);
         rpcServer.setSerializer(new HessianSerializer());
         rpcServer.publishService(helloService, HelloService.class);

@@ -8,6 +8,7 @@ import com.esotericsoftware.minlog.Log;
 import enumeration.RpcError;
 import exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
+import util.NacosUtil;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -20,39 +21,20 @@ import java.util.List;
 @Slf4j
 public class NacosServiceRegistry implements ServiceRegistry {
 
-    private static final String SERVER_ADDR = "127.0.0.1:8848";
-    private static final NamingService namingService;
+    private final NamingService namingService;
 
-    static {
-        try {
-            namingService = NamingFactory.createNamingService(SERVER_ADDR);
-        } catch (NacosException e) {
-            log.error("连接到 Nacos 时有错误发生:", e);
-            throw new RpcException(RpcError.FAILED_TO_CONNECT_TO_SERVICE_REGISTRY);
-        }
+    public NacosServiceRegistry() {
+        namingService = NacosUtil.getNacosNamingService();
     }
 
     @Override
     public <T> void register(String serviceName, InetSocketAddress inetSocketAddress) {
         try {
-            namingService.registerInstance(serviceName, inetSocketAddress.getHostName(), inetSocketAddress.getPort());
-
+            NacosUtil.registerService(namingService, serviceName, inetSocketAddress);
         } catch (NacosException e) {
             log.error("注册服务时有错误发生", e);
             throw new RpcException(RpcError.REGISTER_SERVICE_FAILED);
         }
-    }
-
-    @Override
-    public InetSocketAddress lookupService(String serviceName) {
-        try {
-            List<Instance> instances = namingService.getAllInstances(serviceName);
-            Instance instance = instances.get(0);
-            return new InetSocketAddress(instance.getIp(), instance.getPort());
-        } catch (NacosException e) {
-            log.error("获取服务时有错误发生", e);
-        }
-        return null;
     }
 
 }
