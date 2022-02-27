@@ -10,7 +10,8 @@ import rpc.serializer.CommonSerializer;
  */
 public interface RpcClient {
 
+    int DEFAULT_SERIALIZER = CommonSerializer.HESSIAN_SERIALIZER;
+
     Object sendRequest(RpcRequest rpcRequest);
 
-    void setSerializer(CommonSerializer serializer);
 }

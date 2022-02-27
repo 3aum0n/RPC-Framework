@@ -14,7 +14,6 @@ import java.util.concurrent.ThreadFactory;
 public class ShutdownHook {
 
     private static final String THREAD_NAME_PREFIX = "shutdown-hook";
-    private final ExecutorService threadPool = ThreadPoolFactory.createDefaultThreadPool(THREAD_NAME_PREFIX);
     private static final ShutdownHook SHUTDOWN_HOOK = new ShutdownHook();
 
     public static ShutdownHook getShutdownHook() {
@@ -25,7 +24,7 @@ public class ShutdownHook {
         log.info("关闭后将自动注销所有服务");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             NacosUtil.clearRegistry();
-            threadPool.shutdown();
+            ThreadPoolFactory.shutDownAll();
         }));
     }
 }
