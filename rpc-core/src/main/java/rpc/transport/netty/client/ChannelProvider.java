@@ -7,6 +7,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import rpc.codec.CommonDecoder;
 import rpc.codec.CommonEncoder;
@@ -40,6 +41,7 @@ public class ChannelProvider {
                  * RpcResponse -> ByteBuf
                  */
                 ch.pipeline().addLast(new CommonEncoder(serializer))
+                        .addLast(new IdleStateHandler(0, 5, 0, TimeUnit.SECONDS))
                         .addLast(new CommonDecoder())
                         .addLast(new NettyClientHandler());
             }

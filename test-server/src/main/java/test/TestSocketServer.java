@@ -11,7 +11,7 @@ import rpc.transport.socket.server.SocketServer;
 public class TestSocketServer {
     public static void main(String[] args) {
         HelloService helloService = new HelloServiceImpl2();
-        SocketServer rpcServer = new SocketServer("127.0.0.1", 9000, CommonSerializer.PROTOBUF_SERIALIZER);
+        SocketServer rpcServer = new SocketServer("127.0.0.1", 9999, CommonSerializer.PROTOBUF_SERIALIZER);
         rpcServer.publishService(helloService, HelloService.class);
     }
 }

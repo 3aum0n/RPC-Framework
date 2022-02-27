@@ -10,6 +10,8 @@ public interface CommonSerializer {
     Integer HESSIAN_SERIALIZER = 2;
     Integer PROTOBUF_SERIALIZER = 3;
 
+    Integer DEFAULT_SERIALIZER = KRYO_SERIALIZER;
+
     /**
      * 通过 code 获取对应的序列化器
      *
