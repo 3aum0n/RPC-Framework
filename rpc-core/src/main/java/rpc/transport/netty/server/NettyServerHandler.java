@@ -2,20 +2,17 @@ package rpc.transport.netty.server;
 
 import entity.RpcRequest;
 import entity.RpcResponse;
+import factory.SingletonFactory;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
-import rpc.provider.ServiceProviderImpl;
-import rpc.registry.NacosServiceRegistry;
-import rpc.registry.ServiceRegistry;
 import rpc.handler.RequestHandler;
-import util.ThreadPoolFactory;
+import factory.ThreadPoolFactory;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * 接收 RpcRequest，并且执行调用，将调用结果返回封装成 RpcResponse 发送出去
@@ -25,13 +22,13 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
-    private static RequestHandler requestHandler;
     private static final String THREAD_NAME_PREFIX = "netty-server-handler";
-    private static final ExecutorService threadPool;
+    private RequestHandler requestHandler;
+    private final ExecutorService threadPool;
 
-    static {
-        requestHandler = new RequestHandler();
-        threadPool = ThreadPoolFactory.createDefaultThreadPool(THREAD_NAME_PREFIX);
+    public NettyServerHandler() {
+        this.requestHandler = SingletonFactory.getInstance(RequestHandler.class);
+        this.threadPool = ThreadPoolFactory.createDefaultThreadPool(THREAD_NAME_PREFIX);
     }
 
 

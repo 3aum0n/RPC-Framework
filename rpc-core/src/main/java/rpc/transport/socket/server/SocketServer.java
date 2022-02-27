@@ -3,6 +3,7 @@ package rpc.transport.socket.server;
 import enumeration.RpcError;
 import exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
+import rpc.hook.ShutdownHook;
 import rpc.provider.ServiceProvider;
 import rpc.provider.ServiceProviderImpl;
 import rpc.registry.NacosServiceRegistry;
@@ -10,7 +11,7 @@ import rpc.registry.ServiceRegistry;
 import rpc.transport.RpcServer;
 import rpc.handler.RequestHandler;
 import rpc.serializer.CommonSerializer;
-import util.ThreadPoolFactory;
+import factory.ThreadPoolFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -51,16 +52,14 @@ public class SocketServer implements RpcServer {
 
     @Override
     public void start() {
-        if (serializer == null) {
-            log.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.bind(new InetSocketAddress(host, port));
             log.info("服务器启动...");
+            ShutdownHook.getShutdownHook().addClearAllHook();
             Socket socket;
             while ((socket = serverSocket.accept()) != null) {
                 log.info("消费者连接: {}:{}", socket.getInetAddress(), socket.getPort());
-                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serviceRegistry, serializer));
+                threadPool.execute(new SocketRequestHandlerThread(socket, requestHandler, serializer));
             }
             threadPool.shutdown();
         } catch (IOException e) {

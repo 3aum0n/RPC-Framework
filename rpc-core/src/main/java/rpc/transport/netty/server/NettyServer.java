@@ -10,6 +10,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
+import rpc.hook.ShutdownHook;
 import rpc.transport.RpcServer;
 import rpc.codec.CommonDecoder;
 import rpc.codec.CommonEncoder;
@@ -80,6 +81,7 @@ public class NettyServer implements RpcServer {
                         }
                     });
             ChannelFuture future = serverBootstrap.bind(host, port).sync();
+            ShutdownHook.getShutdownHook().addClearAllHook();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             log.info("启动服务器是有错误发生: ", e);

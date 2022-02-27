@@ -21,16 +21,10 @@ import java.util.List;
 @Slf4j
 public class NacosServiceRegistry implements ServiceRegistry {
 
-    private final NamingService namingService;
-
-    public NacosServiceRegistry() {
-        namingService = NacosUtil.getNacosNamingService();
-    }
-
     @Override
     public <T> void register(String serviceName, InetSocketAddress inetSocketAddress) {
         try {
-            NacosUtil.registerService(namingService, serviceName, inetSocketAddress);
+            NacosUtil.registerService(serviceName, inetSocketAddress);
         } catch (NacosException e) {
             log.error("注册服务时有错误发生", e);
             throw new RpcException(RpcError.REGISTER_SERVICE_FAILED);
