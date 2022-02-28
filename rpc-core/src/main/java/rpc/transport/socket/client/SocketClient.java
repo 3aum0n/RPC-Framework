@@ -6,6 +6,8 @@ import enumeration.ResponseCode;
 import enumeration.RpcError;
 import exception.RpcException;
 import lombok.extern.slf4j.Slf4j;
+import rpc.loadbalancer.LoadBalancer;
+import rpc.loadbalancer.RandomLoadBalancer;
 import rpc.registry.NacosServiceDiscovery;
 import rpc.registry.NacosServiceRegistry;
 import rpc.registry.ServiceDiscovery;
@@ -33,11 +35,20 @@ public class SocketClient implements RpcClient {
     private final CommonSerializer serializer;
 
     public SocketClient() {
-        this(DEFAULT_SERIALIZER);
+        this(DEFAULT_SERIALIZER, new RandomLoadBalancer());
     }
 
     public SocketClient(Integer serializer) {
-        serviceDiscovery = new NacosServiceDiscovery();
+        this(serializer, new RandomLoadBalancer());
+    }
+
+    public SocketClient(LoadBalancer loadBalancer) {
+        this(DEFAULT_SERIALIZER, loadBalancer);
+    }
+
+
+    public SocketClient(Integer serializer, LoadBalancer loadBalancer) {
+        serviceDiscovery = new NacosServiceDiscovery(loadBalancer);
         this.serializer = CommonSerializer.getByCode(serializer);
     }
 

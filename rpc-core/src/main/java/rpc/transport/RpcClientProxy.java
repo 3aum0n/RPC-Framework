@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import rpc.transport.RpcClient;
 import rpc.transport.netty.client.NettyClient;
 import rpc.transport.socket.client.SocketClient;
+import util.NacosUtil;
+import util.RpcMessageChecker;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -45,20 +47,20 @@ public class RpcClientProxy implements InvocationHandler {
         log.info("调用方法:{}#{}", method.getDeclaringClass().getName(), method.getName());
         RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(),
                 method.getName(), method.getParameterTypes(), args, false);
-        Object result = null;
+        RpcResponse rpcResponse = null;
         if (client instanceof NettyClient) {
             CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>) client.sendRequest(rpcRequest);
             try {
-                result = completableFuture.get().getData();
+                rpcResponse = completableFuture.get();
             } catch (InterruptedException | ExecutionException e) {
                 log.error("方法调用请求发送失败", e);
                 return null;
             }
         }
         if (client instanceof SocketClient) {
-            RpcResponse rpcResponse = (RpcResponse) client.sendRequest(rpcRequest);
-            result = rpcResponse.getData();
+            rpcResponse = (RpcResponse) client.sendRequest(rpcRequest);
         }
-        return result;
+        RpcMessageChecker.check(rpcRequest, rpcResponse);
+        return rpcResponse.getData();
     }
 }

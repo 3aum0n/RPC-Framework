@@ -2,6 +2,7 @@ package test;
 
 import api.HelloObject;
 import api.HelloService;
+import rpc.loadbalancer.RoundRobinLoadBalancer;
 import rpc.serializer.CommonSerializer;
 import rpc.transport.RpcClient;
 import rpc.transport.RpcClientProxy;
@@ -22,7 +23,9 @@ public class TestSocketClient {
         RpcClientProxy proxy = new RpcClientProxy(client);
         HelloService helloService = proxy.getProxy(HelloService.class);
         HelloObject message = new HelloObject(new Random().nextInt(10), "This is a message");
-        String res = helloService.hello(message);
-        System.out.println(res);
+        for (int i = 0; i < 10; i++) {
+            String res = helloService.hello(message);
+            System.out.println(res);
+        }
     }
 }
