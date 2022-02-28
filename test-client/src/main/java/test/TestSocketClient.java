@@ -1,5 +1,6 @@
 package test;
 
+import api.ByeService;
 import api.HelloObject;
 import api.HelloService;
 import rpc.loadbalancer.RoundRobinLoadBalancer;
@@ -21,11 +22,12 @@ public class TestSocketClient {
     public static void main(String[] args) {
         RpcClient client = new SocketClient(CommonSerializer.JSON_SERIALIZER);
         RpcClientProxy proxy = new RpcClientProxy(client);
+
         HelloService helloService = proxy.getProxy(HelloService.class);
         HelloObject message = new HelloObject(new Random().nextInt(10), "This is a message");
-        for (int i = 0; i < 10; i++) {
-            String res = helloService.hello(message);
-            System.out.println(res);
-        }
+        System.out.println(helloService.hello(message));
+
+        ByeService byeService = proxy.getProxy(ByeService.class);
+        System.out.println(byeService.bye("Socket"));
     }
 }

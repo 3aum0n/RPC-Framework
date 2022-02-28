@@ -8,6 +8,7 @@ import rpc.provider.ServiceProvider;
 import rpc.provider.ServiceProviderImpl;
 import rpc.registry.NacosServiceRegistry;
 import rpc.registry.ServiceRegistry;
+import rpc.transport.AbstractRpcServer;
 import rpc.transport.RpcServer;
 import rpc.handler.RequestHandler;
 import rpc.serializer.CommonSerializer;
@@ -25,18 +26,13 @@ import java.util.concurrent.*;
  * @author 3aum0n
  */
 @Slf4j
-public class SocketServer implements RpcServer {
+public class SocketServer extends AbstractRpcServer {
 
-    private final String host;
-    private final int port;
     private final ExecutorService threadPool;
     private static final String THREAD_NAME_PREFIX = "socket-rpc-server";
 
     private final RequestHandler requestHandler = new RequestHandler();
     private final CommonSerializer serializer;
-
-    private final ServiceRegistry serviceRegistry;
-    private final ServiceProvider serviceProvider;
 
     public SocketServer(String host, int port) {
         this(host, port, DEFAULT_SERIALIZER);
@@ -49,6 +45,7 @@ public class SocketServer implements RpcServer {
         this.serviceRegistry = new NacosServiceRegistry();
         this.serviceProvider = new ServiceProviderImpl();
         this.serializer = CommonSerializer.getByCode(serializer);
+        scanServices();
     }
 
     @Override
@@ -66,17 +63,6 @@ public class SocketServer implements RpcServer {
         } catch (IOException e) {
             log.error("服务器启动过程中发生错误", e);
         }
-    }
-
-    @Override
-    public <T> void publishService(T service, Class<T> serviceClass) {
-        if (serializer == null) {
-            log.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        serviceProvider.addServiceProvider(service, serviceClass);
-        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
-        start();
     }
 
 }

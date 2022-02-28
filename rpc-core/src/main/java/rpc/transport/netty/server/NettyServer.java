@@ -12,6 +12,7 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
 import rpc.hook.ShutdownHook;
+import rpc.transport.AbstractRpcServer;
 import rpc.transport.RpcServer;
 import rpc.codec.CommonDecoder;
 import rpc.codec.CommonEncoder;
@@ -30,13 +31,7 @@ import java.util.concurrent.TimeUnit;
  * @author 3aum0n
  */
 @Slf4j
-public class NettyServer implements RpcServer {
-
-    private final String host;
-    private final int port;
-
-    private final ServiceRegistry serviceRegistry;
-    private final ServiceProvider serviceProvider;
+public class NettyServer extends AbstractRpcServer {
 
     private final CommonSerializer serializer;
 
@@ -50,17 +45,7 @@ public class NettyServer implements RpcServer {
         this.serviceRegistry = new NacosServiceRegistry();
         this.serviceProvider = new ServiceProviderImpl();
         this.serializer = CommonSerializer.getByCode(serializer);
-    }
-
-    @Override
-    public <T> void publishService(T service, Class<T> serviceClass) {
-        if (serializer == null) {
-            log.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        serviceProvider.addServiceProvider(service, serviceClass);
-        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
-        start();
+        scanServices();
     }
 
     @Override
@@ -92,7 +77,7 @@ public class NettyServer implements RpcServer {
             ChannelFuture future = serverBootstrap.bind(host, port).sync();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            log.info("启动服务器是有错误发生: ", e);
+            log.info("启动服务器时有错误发生: ", e);
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();

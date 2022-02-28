@@ -1,5 +1,6 @@
 package test;
 
+import api.ByeService;
 import api.HelloObject;
 import api.HelloService;
 import rpc.serializer.CommonSerializer;
@@ -20,9 +21,12 @@ public class TestNettyClient {
     public static void main(String[] args) {
         RpcClient client = new NettyClient(CommonSerializer.HESSIAN_SERIALIZER);
         RpcClientProxy proxy = new RpcClientProxy(client);
+
         HelloService helloService = proxy.getProxy(HelloService.class);
         HelloObject message = new HelloObject(new Random().nextInt(10), "This is a message");
-        String res = helloService.hello(message);
-        System.out.println(res);
+        System.out.println(helloService.hello(message));
+
+        ByeService byeService = proxy.getProxy(ByeService.class);
+        System.out.println(byeService.bye("Netty"));
     }
 }

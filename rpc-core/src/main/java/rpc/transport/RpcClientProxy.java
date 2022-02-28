@@ -49,8 +49,8 @@ public class RpcClientProxy implements InvocationHandler {
                 method.getName(), method.getParameterTypes(), args, false);
         RpcResponse rpcResponse = null;
         if (client instanceof NettyClient) {
-            CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>) client.sendRequest(rpcRequest);
             try {
+                CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>) client.sendRequest(rpcRequest);
                 rpcResponse = completableFuture.get();
             } catch (InterruptedException | ExecutionException e) {
                 log.error("方法调用请求发送失败", e);
