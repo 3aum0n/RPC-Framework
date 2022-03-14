@@ -16,6 +16,6 @@ public class RoundRobinLoadBalancer implements LoadBalancer {
         if (index >= instances.size()) {
             index %= instances.size();
         }
-        return instances.get(index);
+        return instances.get(index++);
     }
 }
